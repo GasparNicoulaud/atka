@@ -6,9 +6,9 @@ import { Mesh } from "three";
 import * as THREE from "three";
 
 function Model(props) {
-  const obj = useLoader(OBJLoader, "/modelv3-y.obj");
+  const obj = useLoader(OBJLoader, "/modelv5.obj");
   const colors = useLoader(THREE.TextureLoader, "gradientv3.png");
-  const mat = new THREE.MeshLambertMaterial();
+  const mat = new THREE.MeshBasicMaterial();
   mat.color = new THREE.Color("#28af69");
   mat.opacity = Math.abs(Math.sin(props.frame * 0.09)) * 0.5 + 0.2;
   if (obj) {
@@ -27,7 +27,7 @@ function Model(props) {
         <icosahedronGeometry rotation={[Math.PI, 100, 10]} detail={0} />
         <meshPhongMaterial
           color="#d8dfd9"
-          opacity={Math.abs(Math.sin(props.frame * 0.03)) * 0.2}
+          opacity={Math.abs(Math.sin(props.frame * 0.03)) * 0.05}
           transparent
           map={colors}
         ></meshPhongMaterial>
@@ -61,7 +61,7 @@ export default function Viewer() {
         <Model frame={frame} mouseX={position.x} mouseY={position.y} />
       </Suspense>
       <EffectComposer autoClear>
-        <DepthOfField focusDistance={1} focalLength={0} bokehScale={1} />
+        <DepthOfField focusDistance={1} focalLength={0} bokehScale={0.4} />
       </EffectComposer>
     </Canvas>
   );
