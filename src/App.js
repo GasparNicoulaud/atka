@@ -9,7 +9,7 @@ function Model(props) {
   const obj = useLoader(OBJLoader, "/modelv3-y.obj");
   const mat = new THREE.MeshLambertMaterial();
   mat.color = new THREE.Color("#28af69");
-  mat.opacity = 0.2;
+  mat.opacity = 0.5;
   if (obj) {
     obj.traverse((child) => {
       if (child instanceof Mesh) {
@@ -27,7 +27,7 @@ function Model(props) {
       <mesh
         rotation={[props.frame * 0.01, 1.01 + props.frame * 0.015, 0]}
         scale={1}
-        opacity={0.2}
+        opacity={0.1}
       >
         <icosahedronGeometry rotation={[Math.PI, 100, 10]} detail={0} />
         <meshPhongMaterial color="#d8dfd9" opacity={0.05} transparent />
