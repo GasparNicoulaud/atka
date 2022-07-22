@@ -2,19 +2,36 @@ import React, { Suspense } from "react";
 import { Canvas, useLoader } from "@react-three/fiber";
 import { DepthOfField, EffectComposer } from "@react-three/postprocessing";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import { Mesh } from "three";
+import * as THREE from "three";
 
 function Model(props) {
-  //const ref = useRef();
-  // Subscribe this component to the render-loop, rotate the mesh every frame
-  //useFrame((state, delta) => (ref.current.rotation.x += 0.01));
-
-  const obj = useLoader(OBJLoader, "/modelv1.obj");
+  const obj = useLoader(OBJLoader, "/modelv2.obj");
+  const mat = new THREE.MeshLambertMaterial();
+  mat.color = new THREE.Color("#28af69");
+  if (obj) {
+    obj.traverse((child) => {
+      if (child instanceof Mesh) {
+        child.material = mat;
+      }
+    });
+  }
   return (
-    <primitive
-      rotation={[props.frame * 0.01, props.frame * 0.015, props.frame * 0.02]}
-      scale={2}
-      object={obj}
-    />
+    <>
+      <primitive
+        rotation={[props.frame * 0.01, props.frame * 0.015, props.frame * 0.02]}
+        scale={2}
+        object={obj}
+      />
+      <mesh
+        rotation={[props.frame * 0.01, props.frame * 0.015, props.frame * 0.02]}
+        scale={2}
+        opacity={0.2}
+      >
+        <icosahedronGeometry detail={0} />
+        <meshPhongMaterial color="#d8dfd9" opacity={0.05} transparent />
+      </mesh>
+    </>
   );
 }
 
@@ -36,12 +53,14 @@ export default function Viewer() {
   }, []); // Make sure the effect runs only once
 
   return (
-    <Canvas dpr={0.5} camera={{ fov: 50 }}>
+    <Canvas dpr={1} camera={{ fov: 50 }}>
       <Suspense fallback={null}>
+        <ambientLight />
+        <pointLight position={[10, 10, 10]} />
         <Model frame={frame} />
       </Suspense>
       <EffectComposer>
-        <DepthOfField focusDistance={1} focalLength={0} bokehScale={2} />
+        <DepthOfField focusDistance={1} focalLength={0} bokehScale={1} />
       </EffectComposer>
     </Canvas>
   );
