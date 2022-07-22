@@ -7,10 +7,10 @@ import * as THREE from "three";
 
 function Model(props) {
   const obj = useLoader(OBJLoader, "/modelv3-y.obj");
-  const colors = useLoader(THREE.TextureLoader, "gradient.png");
+  const colors = useLoader(THREE.TextureLoader, "gradientv3.png");
   const mat = new THREE.MeshLambertMaterial();
   mat.color = new THREE.Color("#28af69");
-  mat.opacity = Math.abs(Math.sin(props.frame * 0.09));
+  mat.opacity = Math.abs(Math.sin(props.frame * 0.09)) * 0.5 + 0.2;
   if (obj) {
     obj.traverse((child) => {
       if (child instanceof Mesh) {
