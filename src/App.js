@@ -6,9 +6,10 @@ import { Mesh } from "three";
 import * as THREE from "three";
 
 function Model(props) {
-  const obj = useLoader(OBJLoader, "/modelv2.obj");
+  const obj = useLoader(OBJLoader, "/modelv3-y.obj");
   const mat = new THREE.MeshLambertMaterial();
   mat.color = new THREE.Color("#28af69");
+  mat.opacity = 0.2;
   if (obj) {
     obj.traverse((child) => {
       if (child instanceof Mesh) {
@@ -19,16 +20,16 @@ function Model(props) {
   return (
     <>
       <primitive
-        rotation={[props.frame * 0.01, props.frame * 0.015, props.frame * 0.02]}
-        scale={2}
+        rotation={[props.frame * 0.01, props.frame * 0.015, 0]}
+        scale={1}
         object={obj}
       />
       <mesh
-        rotation={[props.frame * 0.01, props.frame * 0.015, props.frame * 0.02]}
-        scale={2}
+        rotation={[props.frame * 0.01, 1.01 + props.frame * 0.015, 0]}
+        scale={1}
         opacity={0.2}
       >
-        <icosahedronGeometry detail={0} />
+        <icosahedronGeometry rotation={[Math.PI, 100, 10]} detail={0} />
         <meshPhongMaterial color="#d8dfd9" opacity={0.05} transparent />
       </mesh>
     </>
@@ -55,13 +56,19 @@ export default function Viewer() {
   return (
     <Canvas dpr={1} camera={{ fov: 50 }}>
       <Suspense fallback={null}>
-        <ambientLight />
+        <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
         <Model frame={frame} />
       </Suspense>
       <EffectComposer>
-        <DepthOfField focusDistance={1} focalLength={0} bokehScale={1} />
+        <DepthOfField focusDistance={1} focalLength={0} bokehScale={0.5} />
       </EffectComposer>
     </Canvas>
   );
 }
+
+/*
+<EffectComposer>
+        <DepthOfField focusDistance={1} focalLength={0} bokehScale={2} />
+      </EffectComposer>
+      */
