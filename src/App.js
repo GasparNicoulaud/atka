@@ -18,17 +18,12 @@ function Model(props) {
       }
     });
   }
+  const rotX = props.mouseX * 0.001 + props.frame * 0.008;
+  const rotY = props.mouseY * 0.001 + props.frame * 0.012;
   return (
     <>
-      <primitive
-        rotation={[props.frame * 0.01, props.frame * 0.015, 0]}
-        scale={1.5}
-        object={obj}
-      />
-      <mesh
-        rotation={[props.frame * 0.01, 1.01 + props.frame * 0.015, 0]}
-        scale={1.5}
-      >
+      <primitive rotation={[rotX, rotY, 0]} scale={1.5} object={obj} />
+      <mesh rotation={[rotX, 1.01 + rotY, 0]} scale={1.5}>
         <icosahedronGeometry rotation={[Math.PI, 100, 10]} detail={0} />
         <meshPhongMaterial
           color="#d8dfd9"
@@ -57,13 +52,13 @@ export default function Viewer() {
     requestRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(requestRef.current);
   }, []); // Make sure the effect runs only once
-
+  const position = useMousePosition();
   return (
     <Canvas dpr={1} camera={{ fov: 50 }}>
       <Suspense fallback={null}>
         <ambientLight intensity={0.1} />
         <pointLight position={[10, 10, 10]} />
-        <Model frame={frame} />
+        <Model frame={frame} mouseX={position.x} mouseY={position.y} />
       </Suspense>
       <EffectComposer autoClear>
         <DepthOfField focusDistance={1} focalLength={0} bokehScale={1} />
@@ -77,3 +72,18 @@ export default function Viewer() {
         <DepthOfField focusDistance={1} focalLength={0} bokehScale={2} />
       </EffectComposer>
       */
+
+const useMousePosition = () => {
+  const [position, setPosition] = React.useState({ x: 0, y: 0 });
+
+  React.useEffect(() => {
+    const setFromEvent = (e) => setPosition({ x: e.clientX, y: e.clientY });
+    window.addEventListener("mousemove", setFromEvent);
+
+    return () => {
+      window.removeEventListener("mousemove", setFromEvent);
+    };
+  }, []);
+
+  return position;
+};
